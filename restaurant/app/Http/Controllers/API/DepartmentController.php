@@ -22,13 +22,20 @@ class DepartmentController extends Controller
 
             return response()->json($validator->errors(), 400);
         }
+
+        $department = new Department();
+        $department->name = $request->name;
+        $department->routes = implode(",", $request->routes);
+        $department->save();
+
+        return response()->json($department, 200);
     }
 
     public function validator($input)
     {
         $rules = [
             "name" => "required",
-            "routes" => "required",
+            "routes.0" => "required",
         ];
 
         $validator = \Validator::make($input, $rules);
