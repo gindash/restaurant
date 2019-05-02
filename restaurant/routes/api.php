@@ -16,3 +16,10 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::get('/test', function(){
+    return 'yes';
+});
+
+Route::get('/departments', 'API\DepartmentController@index')->name('department.index');
+Route::post('/department', 'API\DepartmentController@store')->name('department.store');
