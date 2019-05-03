@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -38,6 +39,10 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             // Authentication passed...
             $generateToken = $this->generateToken(Auth::user());
+            $request->user()->forceFill([
+                'api_token' => $generateToken,
+            ])->save();
+
             return response()->json(["api_token" => $generateToken], 200);
         }
 
@@ -46,7 +51,7 @@ class AuthController extends Controller
 
     public function generateToken($user)
     {
-        $user->api_token = Str::random(60);
+        $user->api_token = hash('sha256', Str::random(60));
         $user->save();
 
         return $user->api_token;
@@ -54,7 +59,8 @@ class AuthController extends Controller
 
     public function logout()
     {
-        $user = Auth::user();
+        // Auth::logout();
+        $user = User::where('api_token', request()->api_token)->firstorfail();
         $user->api_token = null;
         $user->save();
 

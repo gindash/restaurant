@@ -13,24 +13,29 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:api')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 
-Route::get('/test', function(){
-    return 'yes';
-});
+// Route::get('/test', function(Request $request){
+    //     return 'ok';
+    // });
 
-Route::post('/login', 'API\AuthController@login')->name('login.store');
+Route::post('/login', 'API\AuthController@login')->name('login');
 
-Route::group(['middleware' => ['auth:api', 'checkuser']], function () {
-    //
-    Route::get('/logout', 'API\AuthController@logout')->name('logout.store');
+Route::group(['middleware' => ['checkuser']], function () {
 
-    Route::get('/departments', 'API\DepartmentController@index')->name('department.index');
-    Route::post('/department', 'API\DepartmentController@store')->name('department.store');
-    Route::put('/department/{id}', 'API\DepartmentController@update')->name('department.update');
+        Route::post('/department', 'API\DepartmentController@store')->name('department.store');
+        Route::put('/department/{id}', 'API\DepartmentController@update')->name('department.update');
+        Route::get('/departments', 'API\DepartmentController@index')->name('department.index');
 
-    Route::post('/user', 'API\UserController@store')->name('user.store');
+        Route::get('/logout', 'API\AuthController@logout')->name('logout');
+
+        Route::post('/product', 'API\ProductController@store')->name('product.store');
+        Route::put('/product/{id}', 'API\ProductController@update')->name('product.update');
+        Route::get('/products', 'API\ProductController@index')->name('product.index');
+        Route::get('/products-ready', 'API\ProductController@productsReady')->name('products-ready.index');
+
+        Route::post('/user', 'API\UserController@store')->name('user.store');
 });
 
