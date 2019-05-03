@@ -6,6 +6,7 @@ use App\Department;
 use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+// use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
@@ -56,8 +57,10 @@ class UserController extends Controller
         $user->name = $request->name;
         $user->email = $request->email;
         $user->password = Hash::make($request->password);
+        // $user->api_token = Str::random(60);
         $user->save();
 
         return response()->json($user, 200);
     }
+
 }

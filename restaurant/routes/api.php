@@ -21,8 +21,16 @@ Route::get('/test', function(){
     return 'yes';
 });
 
-Route::get('/departments', 'API\DepartmentController@index')->name('department.index');
-Route::post('/department', 'API\DepartmentController@store')->name('department.store');
-Route::put('/department/{id}', 'API\DepartmentController@update')->name('department.update');
+Route::post('/login', 'API\AuthController@login')->name('login.store');
 
-Route::post('/user', 'API\UserController@store')->name('user.store');
+Route::group(['middleware' => ['auth:api', 'checkuser']], function () {
+    //
+    Route::get('/logout', 'API\AuthController@logout')->name('logout.store');
+
+    Route::get('/departments', 'API\DepartmentController@index')->name('department.index');
+    Route::post('/department', 'API\DepartmentController@store')->name('department.store');
+    Route::put('/department/{id}', 'API\DepartmentController@update')->name('department.update');
+
+    Route::post('/user', 'API\UserController@store')->name('user.store');
+});
+
