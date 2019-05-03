@@ -93,7 +93,7 @@ body {
             </label> --}}
         </div>
         <button class="btn btn-lg btn-primary btn-block" onclick="login(event)">Sign in</button>
-        <p class="mt-5 mb-3 text-muted">&copy; 2017-2019</p>
+        <p class="mt-5 mb-3 text-muted">&copy; 2019|gindash.com</p>
     </form>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
@@ -111,7 +111,7 @@ body {
         })
         .then(function (response) {
             sessionStorage.setItem("api_token", response.data.api_token);
-
+            window.location.href = "http://localhost:8000/home";
         })
         .catch(function (error) {
             Swal.fire({
