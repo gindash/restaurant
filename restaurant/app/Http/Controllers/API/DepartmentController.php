@@ -2,13 +2,40 @@
 
 namespace App\Http\Controllers\API;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Department;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 
 class DepartmentController extends Controller
 {
     //
+    public function validator($input, $action=null)
+    {
+        $rules = [];
+        $data = [
+            "name" => ["required"],
+            "routes.0" => ["required"],
+            ];
+
+        if ($action == 'create'){
+            $rules = $data;
+
+        } else {
+
+            foreach ($input as $key => $value) {
+                # code...
+                if (isset($data[$key])){
+                    $rules[$key] = $data[$key];
+                }
+            }
+
+        }
+
+        $validator = \Validator::make($input, $rules);
+
+        return $validator;
+    }
+
     public function index()
     {
         $data = Department::get();
@@ -29,33 +56,6 @@ class DepartmentController extends Controller
         $department->save();
 
         return response()->json($department, 200);
-    }
-
-    public function validator($input, $action=null)
-    {
-        $rules = [];
-        $data = [
-            "name" => "required",
-            "routes.0" => "required",
-            ];
-
-        if ($action == 'create'){
-            $rules = $data;
-
-        } else {
-
-            foreach ($input as $key => $value) {
-                # code...
-                if (isset($data[$key])){
-                    $rules[$key] = $data[$key];
-                }
-            }
-
-        }
-
-        $validator = \Validator::make($input, $rules);
-
-        return $validator;
     }
 
     public function update(Request $request, $id)
