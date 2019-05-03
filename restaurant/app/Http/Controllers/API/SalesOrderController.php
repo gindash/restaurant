@@ -166,6 +166,7 @@ class SalesOrderController extends Controller
         $rules = [];
         $data = [
             "status" => ["required", Rule::in(["active", "completed", "canceled"])],
+            "payment_amount" => ["required", "numeric"],
             ];
 
         $rules = $data;
@@ -185,6 +186,7 @@ class SalesOrderController extends Controller
 
         $salesOrder = SalesOrder::findorFail($id);
         $salesOrder->status = $request->status;
+        $salesOrder->payment_amount = $request->payment_amount;
         $salesOrder->save();
 
         return response()->json($salesOrder, 200);

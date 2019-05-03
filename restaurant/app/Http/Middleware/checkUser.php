@@ -32,19 +32,16 @@ class checkUser
             // dd($token);
             $user = User::where('api_token', $token)->firstorFail();
 
-            if ( $user->department_id == 3){
-
-                return $next($request);
-            }
-
             $currentRoute = Route::currentRouteName();
-            $checkroutes = Department::where('id', $request->user()->department_id)
-                ->whereRaw('FIND_IN_SET("'.$currentRoute. '", routes)')
-                ->firstorFail();
+
+            $checkroutes = Department::where('id', $user->department_id)
+            ->whereRaw('FIND_IN_SET("'.$currentRoute. '", routes)')
+            ->first();
 
             return $next($request);
         } catch (\Throwable $th) {
             //throw $th;
+            return response()->json( $th->getMessage(), 403);
             return response()->json(['Forbidden'], 403);
         }
     }
