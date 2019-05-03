@@ -23,3 +23,4 @@ Route::get('/test', function(){
 
 Route::get('/departments', 'API\DepartmentController@index')->name('department.index');
 Route::post('/department', 'API\DepartmentController@store')->name('department.store');
+Route::put('/department/{id}', 'API\DepartmentController@update')->name('department.update');
