@@ -39,9 +39,6 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             // Authentication passed...
             $generateToken = $this->generateToken(Auth::user());
-            $request->user()->forceFill([
-                'api_token' => $generateToken,
-            ])->save();
 
             return response()->json(["api_token" => $generateToken], 200);
         }
@@ -60,10 +57,23 @@ class AuthController extends Controller
     public function logout()
     {
         // Auth::logout();
-        $user = User::where('api_token', request()->api_token)->firstorfail();
+        $user = $this->getUser();
         $user->api_token = null;
         $user->save();
 
         return response()->json(["success"], 200);
+    }
+
+    public function getUser()
+    {
+        if (! request()->isMethod('get')) {
+
+            $token = request()->header('Authorization');
+        } else {
+
+            $token = request()->api_token;
+        }
+        $user = User::where('api_token', $token)->firstorfail();
+        return $user;
     }
 }

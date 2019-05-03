@@ -31,6 +31,13 @@ Route::group(['middleware' => ['checkuser']], function () {
 
         Route::get('/logout', 'API\AuthController@logout')->name('logout');
 
+        Route::get('/active-sales-orders', 'API\SalesOrderController@activeSalesOrders')->name('active-sales-orders.index');
+        Route::get('/my-sales-orders', 'API\SalesOrderController@mySalesOrders')->name('my-sales-orders.index');
+        Route::post('/sales-order', 'API\SalesOrderController@store')->name('sales-order.store');
+        Route::put('/sales-order/{id}', 'API\SalesOrderController@update')->name('sales-order.update');
+        Route::put('/sales-order-setstatus/{id}', 'API\SalesOrderController@setStatus')->name('sales-order.setstatus');
+        Route::get('/sales-orders', 'API\SalesOrderController@index')->name('sales-order.index');
+
         Route::post('/product', 'API\ProductController@store')->name('product.store');
         Route::put('/product/{id}', 'API\ProductController@update')->name('product.update');
         Route::get('/products', 'API\ProductController@index')->name('product.index');
