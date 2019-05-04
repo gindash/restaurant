@@ -55,6 +55,36 @@ body {
   padding: 15px;
   margin: auto;
 }
+.table-fixed{
+  width: 100%;
+  background-color: #f3f3f3;
+  tbody{
+    height:200px;
+    overflow-y:auto;
+    width: 100%;
+    }
+  thead,tbody,tr,td,th{
+    display:block;
+  }
+  tbody{
+    td{
+      float:left;
+    }
+  }
+  thead {
+    tr{
+      th{
+        float:left;
+       background-color: #f39c12;
+       border-color:#e67e22;
+      }
+    }
+  }
+}
+
+i:hover {
+    font-size: 15px;
+}
 
     </style>
 
@@ -62,10 +92,25 @@ body {
   <body class="text-center">
 
     <div class="form-signin">
+        <h3>Active Order</h3>
         <div class="row">
+            <div class="col-12">
+                <table class="table table-fixed table-striped" width="100%">
+                    <thead>
+                        <tr>
+                            <td>Table</td>
+                            <td>Order</td>
+                            <td>Time</td>
+                            <td>#</td>
+                        </tr>
+                    </thead>
+                    <tbody>
 
+                    </tbody>
+                </table>
+            </div>
         </div>
-        </br>
+
         </br>
         <div class="row">
             <div class="col">
@@ -75,7 +120,7 @@ body {
                 <button class="btn btn-info btn-block" onclick="order()">Order</button>
             </div>
             <div class="col">
-                <button class="btn btn-info btn-block">MyOrder</button>
+                <button class="btn btn-info btn-block" onclick="myorder()">MyOrder</button>
             </div>
             <div class="col">
                 </br>
@@ -117,6 +162,42 @@ body {
         let home = () => {
             window.location.href = "http://localhost:8000/home";
         }
+
+        let myorder = () => {
+            window.location.href = "http://localhost:8000/myorder";
+        }
+
+        let getActiveSalesOrders = () => {
+            axios.get('http://localhost:8000/api/active-sales-orders?api_token='+sessionStorage.getItem("api_token"))
+            .then(function (response) {
+
+                let object = response.data;
+                for (const key in object) {
+                    if (object.hasOwnProperty(key)) {
+
+                        var date = new Date(object[key].created_at)
+
+                        $('tbody').append('<tr>\
+                            <td>'+object[key].table_no+'</td>\
+                            <td>'+object[key].order_number+'</td>\
+                            <td>'+date.getHours() + ':' + date.getMinutes()+'</td>\
+                            <td><i class="fas fa-search" onclick="showOrder(\''+object[key]._id+'\')" style="cursor:pointer"></i></td>\
+                        </tr>')
+                    }
+                }
+
+            })
+            .catch(function (error) {
+                console.log(error)
+            });
+        }
+
+        let showOrder = (id) => {
+
+            window.location.href = "http://localhost:8000/order-detail/"+id;
+        }
+
+        getActiveSalesOrders()
     </script>
 
 </body>

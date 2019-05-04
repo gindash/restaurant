@@ -31,6 +31,12 @@ class SalesOrderController extends Controller
         return response()->json($salesOrder, 200);
     }
 
+    public function show($id)
+    {
+        $salesOrder = SalesOrder::findorFail($id);
+        return response()->json($salesOrder, 200);
+    }
+
     public function activeSalesOrders()
     {
         $user = $this->getUser();
@@ -144,7 +150,7 @@ class SalesOrderController extends Controller
 
     public function update(Request $request, $id)
     {
-        $validator = $this->validator($request->all(), 'create');
+        $validator = $this->validator($request->all());
         if ($validator->fails()){
 
             return response()->json($validator->errors(), 400);
@@ -152,7 +158,7 @@ class SalesOrderController extends Controller
 
         $items = $this->setItems($request->items);
 
-        $salesOrder = SalesOrder::where('id', $id)->where('status', 'active')->firstorFail();
+        $salesOrder = SalesOrder::where('status', 'active')->findorFail($id);
         $salesOrder->items = $items['items'];
         $salesOrder->amount = $items['amount'];
 

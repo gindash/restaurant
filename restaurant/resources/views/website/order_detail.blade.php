@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
 
 
+
     <style>
       .bd-placeholder-img {
         font-size: 1.125rem;
@@ -54,22 +55,46 @@ body {
   padding: 15px;
   margin: auto;
 }
-.products p:hover {
-    font-weight: bold;
+.table-fixed{
+  width: 100%;
+  background-color: #f3f3f3;
+  tbody{
+    height:200px;
+    overflow-y:auto;
+    width: 100%;
+    }
+  thead,tbody,tr,td,th{
+    display:block;
+  }
+  tbody{
+    td{
+      float:left;
+    }
+  }
+  thead {
+    tr{
+      th{
+        float:left;
+       background-color: #f39c12;
+       border-color:#e67e22;
+      }
+    }
+  }
 }
-.rmv:hover {
-    font-weight: bolder;
+
+
+i:hover {
+    font-size: 15px;
 }
+
     </style>
 
   </head>
   <body class="text-center">
 
     <div class="form-signin">
-
         <div class="row formorder">
-            <div class="col-12">
-                <input type="text" name="table_no" class="form-control" placeholder="Table No.">
+            <div class="col-12" id="detail">
             </div>
             </br>
             <div class="col-12 items">
@@ -99,10 +124,14 @@ body {
                 </br>
             </div>
             <div class="col-12">
-                <button class="btn btn-info btn-block" onclick="proccess(event)">Process</button>
+                <button class="btn btn-info btn-block" onclick="proccess(event)">Update</button>
+            </div>
+            <div class="col-12">
+                </br>
+                <button class="btn btn-info btn-block" id="pay"><span class="fab fa-amazon-pay fa-3x"></span></button>
             </div>
         </div>
-        </br>
+
         </br>
         <div class="row">
             <div class="col">
@@ -112,7 +141,7 @@ body {
                 <button class="btn btn-info btn-block" onclick="order()">Order</button>
             </div>
             <div class="col">
-                <button class="btn btn-info btn-block" onclick="myorder()">MyOrder</button>
+                <button class="btn btn-info btn-block"  onclick="myorder()">MyOrder</button>
             </div>
             <div class="col">
                 </br>
@@ -161,6 +190,59 @@ body {
             window.location.href = "http://localhost:8000/myorder";
         }
 
+        let getDetailOrder = () => {
+            var url = window.location.pathname;
+            var id = url.substr(url.lastIndexOf('/') + 1);
+
+            axios.get('http://localhost:8000/api/sales-order/'+id+'?api_token='+sessionStorage.getItem("api_token"))
+            .then(function (response) {
+
+                let object = response.data;
+                var date = new Date(object.created_at)
+
+
+                $('#pay').attr('onclick', 'pay(\''+object._id+'\', '+object.amount+')')
+                $('#detail').append('<h3 class="text-left">'+object.order_number+'</h3><h6 class="text-left">Time :'+date.getHours() + ':' + date.getMinutes()+'</h6><h6 class="text-left">Table :'+object.table_no+'</h6><h6 class="text-left">Amount :Rp.'+new Intl.NumberFormat(['ban', 'id']).format(object.amount)+'</h6>')
+                for (const key in object['items']) {
+                    if (object['items'].hasOwnProperty(key)) {
+                        $('.items').after('<div class="form-group col-12">\
+                            <div class="input-group">\
+                            <input type="text" name="product_name[]" class="form-control" value="'+object['items'][key].name+'" readonly>\
+                            <div class="input-group-prepend">\
+                            <span class="input-group-text rmv" onclick="remove(this)" style="cursor:pointer;">x</span>\
+                            </div>\
+                            <input type="hidden" name="items[]" class="form-control" value="'+object['items'][key].product_id+'">\
+                        </div>')
+                    }
+                }
+
+            })
+            .catch(function (error) {
+                console.log(error)
+            });
+        }
+
+
+
+        let pay = (id, amount) => {
+            console.log(amount)
+            axios.put('http://localhost:8000/api/sales-order-setstatus/'+id, {status: "completed", payment_amount: amount}, {
+                headers: {'Authorization': sessionStorage.getItem("api_token")}
+            })
+            .then(function (response) {
+                console.log(response)
+                window.location.href = "http://localhost:8000/home";
+            })
+            .catch(function (error) {
+                console.log(error)
+                Swal.fire({
+                    type: 'error',
+                    title: 'Oops...',
+                    text: error.response.data[0],
+                })
+            });
+        }
+
         let setItem = (id, name) => {
             console.log(name)
             $('#collapseOne').collapse('hide')
@@ -198,15 +280,19 @@ body {
 
         let proccess = (e) => {
             e.preventDefault()
+            var url = window.location.pathname;
+            var id = url.substr(url.lastIndexOf('/') + 1);
 
             let input = $('.formorder :input').serialize();
-            axios.post('http://localhost:8000/api/sales-order', input, {
+            axios.put('http://localhost:8000/api/sales-order/'+id, input, {
                 headers: {'Authorization': sessionStorage.getItem("api_token")}
             })
             .then(function (response) {
-                window.location.href = "http://localhost:8000/home";
+                console.log(response)
+                window.location.href = "http://localhost:8000/order-detail/"+id;
             })
             .catch(function (error) {
+                console.log(error)
                 Swal.fire({
                     type: 'error',
                     title: 'Oops...',
@@ -216,6 +302,8 @@ body {
         }
 
         getProductReady()
+
+        getDetailOrder()
     </script>
 
 </body>

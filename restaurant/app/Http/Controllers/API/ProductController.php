@@ -41,7 +41,7 @@ class ProductController extends Controller
 
     public function index()
     {
-        $product = Product::all();
+        $product = Product::orderBy('created_at')->all();
         return response()->json($product, 200);
     }
 
@@ -85,7 +85,7 @@ class ProductController extends Controller
 
     public function productsReady()
     {
-        $product = Product::where('status', 'ready')->get();
+        $product = Product::where('status', 'ready')->orderBy('created_at')->get();
         return response()->json($product, 200);
     }
 }

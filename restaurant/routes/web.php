@@ -22,8 +22,16 @@ Route::get('/home', function () {
     return view('website.home');
 });
 
+Route::get('/myorder', function () {
+    return view('website.myorder');
+});
+
 Route::get('/order', function () {
     return view('website.order');
+});
+
+Route::get('/order-detail/{id}', function () {
+    return view('website.order_detail');
 });
 
 

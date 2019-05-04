@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
 
 
+
     <style>
       .bd-placeholder-img {
         font-size: 1.125rem;
@@ -54,55 +55,62 @@ body {
   padding: 15px;
   margin: auto;
 }
-.products p:hover {
-    font-weight: bold;
+.table-fixed{
+  width: 100%;
+  background-color: #f3f3f3;
+  tbody{
+    height:200px;
+    overflow-y:auto;
+    width: 100%;
+    }
+  thead,tbody,tr,td,th{
+    display:block;
+  }
+  tbody{
+    td{
+      float:left;
+    }
+  }
+  thead {
+    tr{
+      th{
+        float:left;
+       background-color: #f39c12;
+       border-color:#e67e22;
+      }
+    }
+  }
 }
-.rmv:hover {
-    font-weight: bolder;
+
+i:hover {
+    font-size: 15px;
 }
+
     </style>
 
   </head>
   <body class="text-center">
 
     <div class="form-signin">
-
-        <div class="row formorder">
+        <h3>My Order</h3>
+        <div class="row">
             <div class="col-12">
-                <input type="text" name="table_no" class="form-control" placeholder="Table No.">
-            </div>
-            </br>
-            <div class="col-12 items">
-                </br>
-                <h3 class="text-left">Items: </h3>
-            </div>
-            <div class="col-12">
-                <div class="accordion" id="accordionExample">
-                    <div class="card">
-                        <div class="card-header" id="headingOne">
-                        <h2 class="mb-0">
-                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                            Menu
-                            </button>
-                        </h2>
-                        </div>
+                <table class="table table-fixed table-striped" width="100%">
+                    <thead>
+                        <tr>
+                            <td>Table</td>
+                            <td>Order</td>
+                            <td>Time</td>
+                            <td>#</td>
+                        </tr>
+                    </thead>
+                    <tbody>
 
-                        <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
-                        <div class="card-body">
-                            <div class="row text-left products">
-
-                            </div>
-                        </div>
-                        </div>
-                    </div>
-                </div>
-                </br>
-            </div>
-            <div class="col-12">
-                <button class="btn btn-info btn-block" onclick="proccess(event)">Process</button>
+                    </tbody>
+                </table>
             </div>
         </div>
-        </br>
+
         </br>
         <div class="row">
             <div class="col">
@@ -125,8 +133,6 @@ body {
 
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
 
@@ -161,61 +167,37 @@ body {
             window.location.href = "http://localhost:8000/myorder";
         }
 
-        let setItem = (id, name) => {
-            console.log(name)
-            $('#collapseOne').collapse('hide')
-            $('.items').after('<div class="form-group col-12">\
-                    <div class="input-group">\
-                    <input type="text" name="product_name[]" class="form-control" value="'+name+'" readonly>\
-                    <div class="input-group-prepend">\
-                    <span class="input-group-text rmv" onclick="remove(this)" style="cursor:pointer;">x</span>\
-                    </div>\
-                    <input type="hidden" name="items[]" class="form-control" value="'+id+'">\
-                </div>')
-        }
-
-        let remove = (e) => {
-            $(e).closest('.form-group').remove()
-        }
-
-        let getProductReady = () => {
-            axios.get('http://localhost:8000/api/products-ready?api_token='+sessionStorage.getItem("api_token"))
+        let getMySalesOrders = () => {
+            axios.get('http://localhost:8000/api/my-sales-orders?api_token='+sessionStorage.getItem("api_token"))
             .then(function (response) {
 
                 let object = response.data;
                 for (const key in object) {
                     if (object.hasOwnProperty(key)) {
 
-                        $('.products').append('<div class="col-12"><p onclick="setItem(\''+object[key]._id+'\', \''+object[key].name+'\')" style="padding:7px 0px; cursor:pointer;">'+object[key].name+' (Rp.'+new Intl.NumberFormat(['ban', 'id']).format(object[key].price)+')</p></div>')
+                        var date = new Date(object[key].created_at)
+
+                        $('tbody').append('<tr>\
+                            <td>'+object[key].table_no+'</td>\
+                            <td>'+object[key].order_number+'</td>\
+                            <td>'+date.getHours() + ':' + date.getMinutes()+'</td>\
+                            <td>'+object[key].status+'</td>\
+                        </tr>')
                     }
                 }
 
             })
             .catch(function (error) {
-                console.log(error.response.data)
+                console.log(error)
             });
         }
 
-        let proccess = (e) => {
-            e.preventDefault()
+        // let showOrder = (id) => {
 
-            let input = $('.formorder :input').serialize();
-            axios.post('http://localhost:8000/api/sales-order', input, {
-                headers: {'Authorization': sessionStorage.getItem("api_token")}
-            })
-            .then(function (response) {
-                window.location.href = "http://localhost:8000/home";
-            })
-            .catch(function (error) {
-                Swal.fire({
-                    type: 'error',
-                    title: 'Oops...',
-                    text: error.response.data[0],
-                })
-            });
-        }
+        //     window.location.href = "http://localhost:8000/order-detail/"+id;
+        // }
 
-        getProductReady()
+        getMySalesOrders()
     </script>
 
 </body>

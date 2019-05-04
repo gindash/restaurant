@@ -29,8 +29,8 @@ class checkUser
                 $token = $request->api_token;
             }
 
-            // dd($token);
             $user = User::where('api_token', $token)->firstorFail();
+            // var_dump($user);
 
             $currentRoute = Route::currentRouteName();
 
