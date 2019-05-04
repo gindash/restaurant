@@ -111,6 +111,7 @@ body {
         })
         .then(function (response) {
             sessionStorage.setItem("api_token", response.data.api_token);
+            sessionStorage.setItem("routes", response.data.routes);
             window.location.href = "http://localhost:8000/home";
         })
         .catch(function (error) {

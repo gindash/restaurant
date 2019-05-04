@@ -112,20 +112,7 @@ i:hover {
         </div>
 
         </br>
-        <div class="row">
-            <div class="col">
-                <button class="btn btn-info btn-block" onclick="home()"><span class="fas fa-home"></span></button>
-            </div>
-            <div class="col">
-                <button class="btn btn-info btn-block" onclick="order()">Order</button>
-            </div>
-            <div class="col">
-                <button class="btn btn-info btn-block" onclick="myorder()">MyOrder</button>
-            </div>
-            <div class="col">
-                </br>
-                <button class="btn btn-danger btn-block" onclick="logout(event)">Logout</button>
-            </div>
+        <div class="row navuser">
         </div>
         <p class="mt-5 mb-3 text-muted">&copy; 2019|gindash.com</p>
 
@@ -135,37 +122,9 @@ i:hover {
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+    <script src="http://localhost:8000/js/navuser.js"></script>
 
     <script>
-
-        let logout = (e) => {
-            e.preventDefault();
-
-            axios.get('http://localhost:8000/api/logout?api_token='+sessionStorage.getItem("api_token"))
-            .then(function (response) {
-                sessionStorage.clear();
-                window.location.href = "http://localhost:8000";
-            })
-            .catch(function (error) {
-                Swal.fire({
-                    type: 'error',
-                    title: 'Oops...',
-                    text: error.response.data[0],
-                })
-            });
-        }
-
-        let order = () => {
-            window.location.href = "http://localhost:8000/order";
-        }
-
-        let home = () => {
-            window.location.href = "http://localhost:8000/home";
-        }
-
-        let myorder = () => {
-            window.location.href = "http://localhost:8000/myorder";
-        }
 
         let getActiveSalesOrders = () => {
             axios.get('http://localhost:8000/api/active-sales-orders?api_token='+sessionStorage.getItem("api_token"))
