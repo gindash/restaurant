@@ -1,5 +1,7 @@
+const baseUrl = "http://"+window.location.href.split('/')[2]
+
 if (sessionStorage.getItem("api_token") == null){
-    window.location.href = "http://localhost:8000";
+    window.location.href = baseUrl+"";
 }
 
 
@@ -48,23 +50,14 @@ $('.navuser').append('<div class="col-12">\
             </div>')
 
 
-console.log(found)
-
-for (const key in routes) {
-    if (routes.hasOwnProperty(key)) {
-        console.log(routes[key])
-
-    }
-}
-
 let logout = (e) => {
     e.preventDefault();
 
 
-    axios.get('http://localhost:8000/api/logout?api_token='+sessionStorage.getItem("api_token"))
+    axios.get(baseUrl+'/api/logout?api_token='+sessionStorage.getItem("api_token"))
     .then(function (response) {
         sessionStorage.clear();
-        window.location.href = "http://localhost:8000";
+        window.location.href = baseUrl+"";
     })
     .catch(function (error) {
         Swal.fire({
@@ -76,13 +69,13 @@ let logout = (e) => {
 }
 
 let order = () => {
-    window.location.href = "http://localhost:8000/order";
+    window.location.href = baseUrl+"/order";
 }
 
 let home = () => {
-    window.location.href = "http://localhost:8000/home";
+    window.location.href = baseUrl+"/home";
 }
 
 let myorder = () => {
-    window.location.href = "http://localhost:8000/myorder";
+    window.location.href = baseUrl+"/myorder";
 }

@@ -102,17 +102,19 @@ body {
 
 <script>
 
+    const baseUrl = "http://"+window.location.href.split('/')[2]
+
     let login = (e) => {
         e.preventDefault();
 
-        axios.post('http://localhost:8000/api/login', {
+        axios.post(baseUrl+'/api/login', {
             email: $('#inputEmail').val(),
             password: $('#inputPassword').val()
         })
         .then(function (response) {
             sessionStorage.setItem("api_token", response.data.api_token);
             sessionStorage.setItem("routes", response.data.routes);
-            window.location.href = "http://localhost:8000/home";
+            window.location.href = baseUrl+"/home";
         })
         .catch(function (error) {
             Swal.fire({

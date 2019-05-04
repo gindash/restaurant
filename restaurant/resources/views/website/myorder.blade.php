@@ -122,13 +122,19 @@ i:hover {
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
-    <script src="http://localhost:8000/js/navuser.js"></script>
+    <script src="{{asset('/js/navuser.js')}}"></script>
 
 
     <script>
 
+        let status = {
+            'active': '<i class="fas fa-cog"></i>',
+            'completed': '<i class="fas fa-check"></i>',
+            'canceled': '<i class="fas fa-times"></i>',
+        }
+
         let getMySalesOrders = () => {
-            axios.get('http://localhost:8000/api/my-sales-orders?api_token='+sessionStorage.getItem("api_token"))
+            axios.get(baseUrl+'/api/my-sales-orders?api_token='+sessionStorage.getItem("api_token"))
             .then(function (response) {
 
                 let object = response.data;
@@ -136,13 +142,13 @@ i:hover {
                     if (object.hasOwnProperty(key)) {
 
                         var date = new Date(object[key].created_at)
-                        console.log(object[key].created_by)
+                        // console.log(object[key].created_by)
 
                         $('tbody').append('<tr>\
                             <td>'+object[key].table_no+'</td>\
                             <td>'+object[key].order_number+'</td>\
                             <td>'+date.getHours() + ':' + date.getMinutes()+'</td>\
-                            <td>'+object[key].status+'</td>\
+                            <td>'+status[object[key].status]+'</td>\
                         </tr>')
                     }
                 }
@@ -155,7 +161,7 @@ i:hover {
 
         // let showOrder = (id) => {
 
-        //     window.location.href = "http://localhost:8000/order-detail/"+id;
+        //     window.location.href = baseUrl+"/order-detail/"+id;
         // }
 
         getMySalesOrders()

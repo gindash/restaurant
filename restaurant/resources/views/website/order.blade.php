@@ -68,6 +68,7 @@ body {
     <div class="form-signin">
 
         <div class="row formorder">
+            <h3>New Order</h3>
             <div class="col-12">
                 <input type="text" name="table_no" class="form-control" placeholder="Table No.">
             </div>
@@ -116,7 +117,7 @@ body {
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
-    <script src="http://localhost:8000/js/navuser.js"></script>
+    <script src="{{asset('/js/navuser.js')}}"></script>
 
 
     <script>
@@ -139,7 +140,7 @@ body {
         }
 
         let getProductReady = () => {
-            axios.get('http://localhost:8000/api/products-ready?api_token='+sessionStorage.getItem("api_token"))
+            axios.get(baseUrl+'/api/products-ready?api_token='+sessionStorage.getItem("api_token"))
             .then(function (response) {
 
                 let object = response.data;
@@ -160,17 +161,17 @@ body {
             e.preventDefault()
 
             let input = $('.formorder :input').serialize();
-            axios.post('http://localhost:8000/api/sales-order', input, {
+            axios.post(baseUrl+'/api/sales-order', input, {
                 headers: {'Authorization': sessionStorage.getItem("api_token")}
             })
             .then(function (response) {
-                window.location.href = "http://localhost:8000/home";
+                window.location.href = baseUrl+"/home";
             })
             .catch(function (error) {
                 Swal.fire({
                     type: 'error',
                     title: 'Oops...',
-                    text: error.response.data[0],
+                    text: error.response.status,
                 })
             });
         }

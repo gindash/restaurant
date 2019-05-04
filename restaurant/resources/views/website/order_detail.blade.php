@@ -142,7 +142,7 @@ i:hover {
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
-    <script src="http://localhost:8000/js/navuser.js"></script>
+    <script src="{{asset('/js/navuser.js')}}"></script>
 
 
     <script>
@@ -151,7 +151,7 @@ i:hover {
             var url = window.location.pathname;
             var id = url.substr(url.lastIndexOf('/') + 1);
 
-            axios.get('http://localhost:8000/api/sales-order/'+id+'?api_token='+sessionStorage.getItem("api_token"))
+            axios.get(baseUrl+'/api/sales-order/'+id+'?api_token='+sessionStorage.getItem("api_token"))
             .then(function (response) {
 
                 let object = response.data;
@@ -183,12 +183,12 @@ i:hover {
 
         let pay = (id, amount) => {
             console.log(amount)
-            axios.put('http://localhost:8000/api/sales-order-setstatus/'+id, {status: "completed", payment_amount: amount}, {
+            axios.put(baseUrl+'/api/sales-order-setstatus/'+id, {status: "completed", payment_amount: amount}, {
                 headers: {'Authorization': sessionStorage.getItem("api_token")}
             })
             .then(function (response) {
                 console.log(response)
-                window.location.href = "http://localhost:8000/home";
+                window.location.href = baseUrl+"/home";
             })
             .catch(function (error) {
                 console.log(error)
@@ -218,7 +218,7 @@ i:hover {
         }
 
         let getProductReady = () => {
-            axios.get('http://localhost:8000/api/products-ready?api_token='+sessionStorage.getItem("api_token"))
+            axios.get(baseUrl+'/api/products-ready?api_token='+sessionStorage.getItem("api_token"))
             .then(function (response) {
 
                 let object = response.data;
@@ -241,12 +241,12 @@ i:hover {
             var id = url.substr(url.lastIndexOf('/') + 1);
 
             let input = $('.formorder :input').serialize();
-            axios.put('http://localhost:8000/api/sales-order/'+id, input, {
+            axios.put(baseUrl+'/api/sales-order/'+id, input, {
                 headers: {'Authorization': sessionStorage.getItem("api_token")}
             })
             .then(function (response) {
                 console.log(response)
-                window.location.href = "http://localhost:8000/order-detail/"+id;
+                window.location.href = baseUrl+"/order-detail/"+id;
             })
             .catch(function (error) {
                 console.log(error)
