@@ -5,17 +5,17 @@ mongoDB
 
 after connect mysql and mongodb use artisan db:seed
 
-login
+login user=
 
-=> superadmin
+superadmin => 
 email:admin@mail.xx
 pass:admin123
 
-=> waitress
+waitress => 
 email:danang@mail.xx
 pass:danang123
 
-=> cashier
+cashier => 
 email:darto@mail.xx
 pass:darto123
 
